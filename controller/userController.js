@@ -107,7 +107,7 @@ exports.updateUserPhoto = async (req, res, next) => {
     files.forEach((filesLink) => {
       const dataPath = path.join(
         __dirname,
-        `../public/uploads/${fileStoragePathName}/${filesLink}`
+        `../public/uploads/user/${filesLink}`
       );
       fs.unlink(dataPath, (err) => {
         [];

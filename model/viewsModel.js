@@ -7,10 +7,12 @@ const MySchema = Schema(
       ref: "video",
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["views", "history", "watch-later"],
-    },
+    status: [
+      {
+        type: String,
+        enum: ["views", "history", "watch-later"],
+      },
+    ],
     user_ID: {
       type: Schema.Types.ObjectId,
       ref: "user",

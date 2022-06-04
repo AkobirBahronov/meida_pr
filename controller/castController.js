@@ -23,10 +23,10 @@ exports.updateCastDetails = async (req, res, next) => {
 
 exports.updateCastPhoto = async (req, res, next) => {
   const result = new DemoClass(CastModel, req, res, next);
-  result.updateDataFiles("public/uploads/cast");
+  result.updateDataFiles("cast");
 };
 
 exports.deleteCast = async (req, res, next) => {
   const result = new DemoClass(CastModel, req, res, next);
-  result.deleteDataWithFiles("public/uploads/cast");
+  result.deleteDataWithFiles("cast");
 };

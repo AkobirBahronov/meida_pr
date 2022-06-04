@@ -13,6 +13,10 @@ const languageRouter = require("./routes/languageRoute");
 const countryRouter = require("./routes/countryRoute");
 const genreRouter = require("./routes/genreRoute");
 const tagRouter = require("./routes/tagRoute");
+const specialityRouter = require("./routes/specialityRoute");
+const castRouter = require("./routes/castRoute");
+const moviesRouter = require("./routes/moviesRoute");
+const videoRouter = require("./routes/videoRoute");
 
 // Middleware
 app.use((req, res, next) => {
@@ -37,6 +41,10 @@ app.use("/languages", languageRouter);
 app.use("/countries", countryRouter);
 app.use("/genres", genreRouter);
 app.use("/tags", tagRouter);
+app.use("/specialities", specialityRouter);
+app.use("/casts", castRouter);
+app.use("/movies", moviesRouter);
+app.use("/videos", videoRouter);
 
 // server
 app.listen(port, () => {

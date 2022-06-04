@@ -2,21 +2,24 @@ const { model, Schema } = require("mongoose");
 
 const MySchema = Schema(
   {
-    language_ID: {
+    user_ID: {
       type: Schema.Types.ObjectId,
-      ref: "language",
+      ref: "user",
       required: true,
     },
-    video_ID: {
+    subscription_ID: {
       type: Schema.Types.ObjectId,
-      ref: "video",
+      ref: "subscription",
       required: true,
     },
-    files: { type: String, required: [true, "Please fill up"] },
+    deadline: {
+      type: Date,
+      required: [true, "Please fill up"],
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = model("subtitle", MySchema);
+module.exports = model("deadline", MySchema);

@@ -8,7 +8,7 @@ const MySchema = Schema(
       ref: "speciality",
       required: true,
     },
-    files: { type: String, required: [true, "Please fill up"] },
+    files: [{ type: String, required: [true, "Please fill up"] }],
   },
   {
     timestamps: true,

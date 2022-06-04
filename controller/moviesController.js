@@ -28,10 +28,10 @@ exports.updateMovieRef = async (req, res, next) => {
 
 exports.updateMovieFiles = async (req, res, next) => {
   const result = new DemoClass(MoviesModel, req, res, next);
-  result.updateDataFiles("public/uploads/movies");
+  result.updateDataFiles("movies");
 };
 
 exports.deleteMovie = async (req, res, next) => {
   const result = new DemoClass(MoviesModel, req, res, next);
-  result.deleteDataWithFiles("public/uploads/movies");
+  result.deleteDataWithFiles("movies");
 };

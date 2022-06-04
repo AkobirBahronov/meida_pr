@@ -11,18 +11,14 @@ const MySchema = Schema(
       default: "none",
     },
     link: {
-      telegram: [
-        {
-          type: String,
-          required: true,
-        },
-      ],
-      instagram: [
-        {
-          type: String,
-          required: true,
-        },
-      ],
+      telegram: {
+        type: String,
+        required: true,
+      },
+      instagram: {
+        type: String,
+        required: true,
+      },
     },
     balance: {
       type: Number,

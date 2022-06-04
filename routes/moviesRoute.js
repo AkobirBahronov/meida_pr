@@ -9,15 +9,6 @@ const moviesController = require("../controller/moviesController");
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, "./public/uploads/movies");
-  },
-  filename: function (req, file, callback) {
-    callback(null, `${md5(Date.now())}${path.extname(file.originalname)}`);
-  },
-});
-
 const detailValidator = [
   body("name.uz", "Name in uz is required.").trim().not().isEmpty(),
   body("name.ru", "Name in ru is required.").trim().not().isEmpty(),
@@ -54,6 +45,15 @@ const detailValidator = [
   ),
   body("mistakes", "mistakes is required.").trim().not().isEmpty(),
 ];
+
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "./public/uploads/movies");
+  },
+  filename: function (req, file, callback) {
+    callback(null, `${md5(Date.now())}${path.extname(file.originalname)}`);
+  },
+});
 
 const fileUpload = multer({ storage: storage });
 

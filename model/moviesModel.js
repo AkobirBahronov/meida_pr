@@ -17,11 +17,6 @@ const MySchema = Schema(
       ref: "language",
       required: true,
     },
-    subtitle_ID: {
-      type: Schema.Types.ObjectId,
-      ref: "subtitle",
-      required: true,
-    },
     cast_ID: {
       type: Schema.Types.ObjectId,
       ref: "cast",
@@ -64,7 +59,7 @@ const MySchema = Schema(
       },
     ],
     rating: { type: Number, default: 0 },
-    budget: { type: Number, required: [true, "Please fill up"] },
+    budget: { type: String, required: [true, "Please fill up"] },
     action: {
       type: String,
       enum: ["kino", "serial", "multifilm"],
