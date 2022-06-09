@@ -4,7 +4,7 @@ const MySchema = Schema(
   {
     name: {
       type: String,
-      enum: ["bronze", "silver", "gold"],
+      enum: ["bronze", "silver", "gold", "premium"],
       required: [true, "Please fill up"],
     },
     price: {
@@ -12,7 +12,7 @@ const MySchema = Schema(
       required: [true, "Please fill up"],
     },
     duration: {
-      type: String,
+      type: Number,
       enum: [1, 3, 6, 12],
       required: [true, "Please fill up"],
     },

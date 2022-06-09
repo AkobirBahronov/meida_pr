@@ -11,6 +11,7 @@ const {
 } = require("../config/callback");
 const UserModel = require("../model/userModel");
 const { validationResult } = require("express-validator");
+const DeadlineModel = require("../model/deadlineModel");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -159,7 +160,7 @@ exports.login = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const user = await UserModel.findOne({ email: email });
+    const user = await UserModel.findOneAndUpdate({ email: email });
     if (!user) {
       const error = new Error("A user with this email could not be found.");
       error.statusCode = 401;
@@ -171,6 +172,13 @@ exports.login = async (req, res, next) => {
       const error = new Error("Wrong Password");
       error.statusCode = 401;
       throw error;
+    }
+
+    const deadline = await DeadlineModel.findOne({ user_ID: user._id });
+
+    if (deadline.deadline < Date.now()) {
+      user.status = "none";
+      await user.save();
     }
 
     const token = jwt.sign(

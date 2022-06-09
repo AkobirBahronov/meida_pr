@@ -1,7 +1,8 @@
-const callback = require("../config/callback");
-const { v4: uuidv4 } = require("uuid");
-const path = require("path");
-const fs = require("fs");
+const callback = require('../config/callback');
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const fs = require('fs');
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = class DemoClass {
   constructor(Model, Request, Response, Next) {
@@ -17,9 +18,9 @@ module.exports = class DemoClass {
     const data = new Model({ ...req.body, uuid: uuidv4() });
     try {
       const result = await data.save();
-      res.json(callback.callbackSuccessJson(result, "created"));
+      res.json(callback.callbackSuccessJson(result, 'created'));
     } catch (err) {
-      res.json(callback.callbackErrorJson(err, "error"));
+      res.json(callback.callbackErrorJson(err, err.message));
     }
   }
 
@@ -35,9 +36,9 @@ module.exports = class DemoClass {
       .populate([...populate])
       .exec((error, data) => {
         if (error) {
-          res.json(callback.callbackErrorJson(error, "error"));
+          res.json(callback.callbackErrorJson(error, error.message));
         } else {
-          res.json(callback.callbackSuccessJson(data, "received"));
+          res.json(callback.callbackSuccessJson(data, 'received'));
         }
       });
   }
@@ -49,9 +50,9 @@ module.exports = class DemoClass {
       .populate([...populate])
       .exec((error, data) => {
         if (error) {
-          res.json(callback.callbackErrorJson(error, "error"));
+          res.json(callback.callbackErrorJson(error, error.message));
         } else {
-          res.json(callback.callbackSuccessJson(data, "received"));
+          res.json(callback.callbackSuccessJson(data, 'received'));
         }
       });
   }
@@ -69,24 +70,32 @@ module.exports = class DemoClass {
     try {
       const data = await Model.create({ ...req.body, files: arrayFiles });
       const result = await data.save();
-      res.json(callback.callbackSuccessJson(result, "created"));
+      res.json(callback.callbackSuccessJson(result, 'created'));
     } catch (err) {
-      res.json(callback.callbackErrorJson(err, "error"));
+      res.json(callback.callbackErrorJson(err, err.message));
     }
   }
 
   // update data detail only
-  async updateDataDetails() {
+  async updateDataDetails(userId) {
     const { Model, req, res, next } = this;
     try {
-      const data = await Model.findByIdAndUpdate(req.params.id);
+      let data;
+      if (userId) {
+        data = await Model.updateOne({
+          _id: ObjectId(req.params.id),
+          user_ID: ObjectId(userId),
+        });
+      } else {
+        data = await Model.findByIdAndUpdate(req.params.id);
+      }
       for (const key in req.body) {
         data[key] = req.body[key];
       }
       const result = await data.save();
-      res.json(callback.callbackSuccessJson(result, "updated"));
+      res.json(callback.callbackSuccessJson(result, 'updated'));
     } catch (err) {
-      res.json(callback.callbackErrorJson(err, "error"));
+      res.json(callback.callbackErrorJson(err, err.message));
     }
   }
 
@@ -120,9 +129,9 @@ module.exports = class DemoClass {
       }
       data.files = arrayFiles;
       const result = await data.save();
-      res.json(callback.callbackSuccessJson(result, "updated"));
+      res.json(callback.callbackSuccessJson(result, 'updated'));
     } catch (err) {
-      res.json(callback.callbackErrorJson(err, "error"));
+      res.json(callback.callbackErrorJson(err, err.message));
     }
   }
 
@@ -131,9 +140,9 @@ module.exports = class DemoClass {
     const { Model, req, res, next } = this;
     try {
       const result = await Model.findByIdAndDelete(req.params.id);
-      res.json(callback.callbackSuccessJson(result, "deleted"));
+      res.json(callback.callbackSuccessJson(result, 'deleted'));
     } catch (err) {
-      res.json(callback.callbackErrorJson(err, "error"));
+      res.json(callback.callbackErrorJson(err, err.message));
     }
   }
 
@@ -156,9 +165,9 @@ module.exports = class DemoClass {
       });
 
       const result = await Model.findByIdAndDelete(req.params.id);
-      res.json(callback.callbackSuccessJson(result, "deleted"));
+      res.json(callback.callbackSuccessJson(result, 'deleted'));
     } catch (err) {
-      res.json(callback.callbackErrorJson(err, "error"));
+      res.json(callback.callbackErrorJson(err, err.message));
     }
   }
 };

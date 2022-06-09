@@ -1,7 +1,7 @@
-const DemoClass = require("../class/class");
-const VideoModel = require("../model/videoModel");
-const ViewsModel = require("../model/viewsModel");
-const callback = require("../config/callback");
+const DemoClass = require('../class/class');
+const VideoModel = require('../model/videoModel');
+const ViewsModel = require('../model/viewsModel');
+const callback = require('../config/callback');
 
 exports.getAllVideos = async (req, res, next) => {
   const result = new DemoClass(VideoModel, req, res, next);
@@ -20,15 +20,15 @@ exports.watchVideo = async (req, res, next) => {
       const result = await video.save();
       await ViewsModel.create({
         user_ID: req.userId,
-        status: ["views", "history"],
+        status: ['views', 'history'],
         video_ID: req.params.id,
       });
-      res.json(callback.callbackSuccessJson(result, "received"));
+      res.json(callback.callbackSuccessJson(result, 'received'));
     } else {
-      res.json(callback.callbackSuccessJson(video, "received"));
+      res.json(callback.callbackSuccessJson(video, 'received'));
     }
   } catch (err) {
-    res.json(callback.callbackErrorJson(err, "error"));
+    res.json(callback.callbackErrorJson(err, 'error'));
   }
 };
 
@@ -49,10 +49,10 @@ exports.updateVideoRef = async (req, res, next) => {
 
 exports.updateVideoFiles = async (req, res, next) => {
   const result = new DemoClass(VideoModel, req, res, next);
-  result.updateDataFiles("video");
+  result.updateDataFiles('video');
 };
 
 exports.deleteVideo = async (req, res, next) => {
   const result = new DemoClass(VideoModel, req, res, next);
-  result.deleteDataWithFiles("video");
+  result.deleteDataWithFiles('video');
 };

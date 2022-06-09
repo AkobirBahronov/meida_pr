@@ -2,24 +2,31 @@ const { model, Schema } = require("mongoose");
 
 const MySchema = Schema(
   {
-    movies_ID: {
+    video_ID: {
       type: Schema.Types.ObjectId,
-      ref: "movies",
+      ref: "video",
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["views", "history", "watch-later"],
+    status: [
+      {
+        type: String,
+        enum: ["ratings", "history"],
+      },
+    ],
+    rating: {
+      type: Number,
+      enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      required: true,
     },
     user_ID: {
       type: Schema.Types.ObjectId,
       ref: "user",
       required: true,
     },
-    directingRating: { type: Number, default: 0 },
-    entertainmentRating: { type: Number, default: 0 },
-    plotRating: { type: Number, default: 0 },
-    actorsRating: { type: Number, default: 0 },
+    directingRating: { type: Boolean, default: false },
+    entertainmentRating: { type: Boolean, default: false },
+    plotRating: { type: Boolean, default: false },
+    actorsRating: { type: Boolean, default: false },
   },
   {
     timestamps: true,

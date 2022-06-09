@@ -28,10 +28,6 @@ const MySchema = Schema(
       type: String,
       required: true,
     },
-    subscriptionDeadline: {
-      type: Number,
-      default: 0,
-    },
     files: [
       {
         type: String,

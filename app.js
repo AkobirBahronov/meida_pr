@@ -17,6 +17,8 @@ const specialityRouter = require("./routes/specialityRoute");
 const castRouter = require("./routes/castRoute");
 const moviesRouter = require("./routes/moviesRoute");
 const videoRouter = require("./routes/videoRoute");
+const ratingRouter = require("./routes/ratingRoute");
+const subscriptionRouter = require("./routes/subscriptionRoute");
 
 // Middleware
 app.use((req, res, next) => {
@@ -45,6 +47,8 @@ app.use("/specialities", specialityRouter);
 app.use("/casts", castRouter);
 app.use("/movies", moviesRouter);
 app.use("/videos", videoRouter);
+app.use("/ratings", ratingRouter);
+app.use("/subscriptions", subscriptionRouter);
 
 // server
 app.listen(port, () => {
