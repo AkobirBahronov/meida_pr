@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const UserModel = require("../model/userModel");
+const { jwt_key } = require("../../config");
 
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
     const error = new Error("Not authenticated");
@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, "secretAvlohubToken");
+    decodedToken = jwt.verify(token, jwt_key);
   } catch (err) {
     err.status = 500;
     throw err;
@@ -19,12 +19,6 @@ module.exports = async (req, res, next) => {
   if (!decodedToken) {
     const error = new Error("Not authenticated.");
     error.statusCode = 401;
-    throw error;
-  }
-  const admin = await UserModel.findById(decodedToken.userId);
-  if (admin.role !== "admin") {
-    const error = new Error("Not authorized");
-    error.statusCode = 403;
     throw error;
   }
   req.userId = decodedToken.userId;

@@ -43,6 +43,23 @@ module.exports = class DemoClass {
       });
   }
 
+  async getAllByMovies(movies_ID) {
+    const { Model, req, res, next } = this;
+    const currentPage = req.query.page || 1;
+    const perPage = 10;
+    await Model.find({ movies_ID })
+      .sort({ createdAt: -1 })
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage)
+      .exec((error, data) => {
+        if (error) {
+          res.json(callback.callbackErrorJson(error, error.message));
+        } else {
+          res.json(callback.callbackSuccessJson(data, 'received'));
+        }
+      });
+  }
+
   // getOne
   async getOne(...populate) {
     const { Model, req, res, next } = this;

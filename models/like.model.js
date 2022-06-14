@@ -23,4 +23,4 @@ const MySchema = Schema(
   }
 );
 
-module.exports = model('rating', MySchema);
+module.exports = model('like', MySchema);

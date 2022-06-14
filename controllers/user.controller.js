@@ -1,22 +1,22 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const path = require("path");
-const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const {
   callbackSuccessJson,
   callbackErrorJson,
-} = require("../config/callback");
-const UserModel = require("../model/userModel");
-const { validationResult } = require("express-validator");
-const DeadlineModel = require("../model/deadlineModel");
+} = require('../config/callback');
+const { validationResult } = require('express-validator');
+const { jwt_key, jwt_time } = require('../config');
+const { User, Deadline } = require('../models');
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: 'gmail',
   auth: {
-    user: "akobirmailserver@gmail.com",
-    pass: "mailserve1303",
+    user: 'akobirmailserver@gmail.com',
+    pass: 'mailserve1303',
   },
   tls: {
     rejectUnauthorized: false,
@@ -41,7 +41,7 @@ exports.signUp = async (req, res, next) => {
 
     const hashedPw = await bcrypt.hash(password, 12);
     const uuid = uuidv4();
-    const user = new UserModel({
+    const user = new User({
       username,
       email,
       password: hashedPw,
@@ -52,7 +52,7 @@ exports.signUp = async (req, res, next) => {
     });
 
     const result = await user.save();
-    res.status(201).json(callbackSuccessJson(result, "signed up"));
+    res.status(201).json(callbackSuccessJson(result, 'signed up'));
   } catch (err) {
     res.json(callbackErrorJson(err, err.message));
   }
@@ -71,7 +71,7 @@ exports.updateUserDetails = async (req, res, next) => {
 
     const hashedPw = await bcrypt.hash(password, 12);
 
-    const user = UserModel.findByIdAndUpdate(userId);
+    const user = User.findByIdAndUpdate(userId);
 
     user.username = username;
     user.email = email;
@@ -79,7 +79,7 @@ exports.updateUserDetails = async (req, res, next) => {
     user.link = link;
 
     const result = await user.save();
-    res.status(201).json(callbackSuccessJson(result, "successfully updated"));
+    res.status(201).json(callbackSuccessJson(result, 'successfully updated'));
   } catch (err) {
     res.json(callbackErrorJson(err, err.message));
   }
@@ -101,7 +101,7 @@ exports.updateUserPhoto = async (req, res, next) => {
       throw error;
     }
 
-    const { files } = await UserModel.findById(userId).select({
+    const { files } = await User.findById(userId).select({
       files: 1,
     });
 
@@ -115,12 +115,12 @@ exports.updateUserPhoto = async (req, res, next) => {
       });
     });
 
-    const user = UserModel.findByIdAndUpdate(userId);
+    const user = User.findByIdAndUpdate(userId);
 
     user.files = arrayFiles;
 
     const result = await user.save();
-    res.status(201).json(callbackSuccessJson(result, "successfully updated"));
+    res.status(201).json(callbackSuccessJson(result, 'successfully updated'));
   } catch (err) {
     res.json(callbackErrorJson(err, err.message));
   }
@@ -129,8 +129,8 @@ exports.updateUserPhoto = async (req, res, next) => {
 exports.getLoggedUserDetail = async (req, res, next) => {
   const userId = req.userId;
   try {
-    const result = await UserModel.findById(userId);
-    res.status(201).json(callbackSuccessJson(result, "successfully updated"));
+    const result = await User.findById(userId);
+    res.status(201).json(callbackSuccessJson(result, 'successfully updated'));
   } catch (err) {
     res.json(callbackErrorJson(err, err.message));
   }
@@ -140,11 +140,11 @@ exports.getUsers = async (req, res, next) => {
   try {
     const currentPage = req.query.page || 1;
     const perPage = 10;
-    const users = await UserModel.find()
+    const users = await User.find()
       .sort({ createdAt: -1 })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
-    res.status(201).json(callbackSuccessJson(users, "successfully updated"));
+    res.status(201).json(callbackSuccessJson(users, 'successfully updated'));
   } catch (err) {
     res.json(callbackErrorJson(err, err.message));
   }
@@ -160,37 +160,36 @@ exports.login = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const user = await UserModel.findOneAndUpdate({ email: email });
+    const user = await User.findOne({ email: email });
     if (!user) {
-      const error = new Error("A user with this email could not be found.");
+      const error = new Error('A user with this email could not be found.');
       error.statusCode = 401;
       throw error;
     }
     const isEqual = await bcrypt.compare(password, user.password);
-
     if (!isEqual) {
-      const error = new Error("Wrong Password");
+      const error = new Error('Wrong Password');
       error.statusCode = 401;
       throw error;
     }
 
-    const deadline = await DeadlineModel.findOne({ user_ID: user._id });
+    const deadline = await Deadline.findOne({ user_ID: user._id });
 
-    if (deadline.deadline < Date.now()) {
-      user.status = "none";
+    if (deadline?.deadline < Date.now()) {
+      const user = await User.findOneAndUpdate({ email: email });
+      user.status = 'none';
       await user.save();
     }
-
     const token = jwt.sign(
       {
         email: user.email,
         userId: user._id.toString(),
       },
-      "secretAvlohubToken",
-      { expiresIn: "1h" }
+      jwt_key,
+      { expiresIn: jwt_time }
     );
     const data = { token: token, userId: user._id.toString() };
-    res.status(200).json(callbackSuccessJson(data, "logged in"));
+    res.status(200).json(callbackSuccessJson(data, 'logged in'));
   } catch (err) {
     res.json(callbackErrorJson(err, err.message));
   }
@@ -200,12 +199,12 @@ exports.postPasswordResetRequest = (req, res, next) => {
   crypto.randomBytes(32, async (err, buffer) => {
     if (err) {
       res.json(callbackErrorJson(err, err.message));
-      return res.redirect("/reset");
+      return res.redirect('/reset');
     }
-    const token = buffer.toString("hex");
-    const user = await UserModel.findOne({ email: req.body.email });
+    const token = buffer.toString('hex');
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      const error = new Error("No account with that email found.");
+      const error = new Error('No account with that email found.');
       error.statusCode = 404;
       throw error;
     }
@@ -213,13 +212,13 @@ exports.postPasswordResetRequest = (req, res, next) => {
     user.resetTokenExpiration = Date.now() + 3600000;
     await user.save();
 
-    res.status(200).json(callbackSuccessJson({}, "sent to email"));
+    res.status(200).json(callbackSuccessJson({}, 'sent to email'));
 
     transporter
       .sendMail({
         to: req.body.email,
-        from: "akobir@avlohub.com",
-        subject: "Password Reset",
+        from: 'akobir@avlohub.com',
+        subject: 'Password Reset',
         html: `
     <p>You requested password reset</p>
     <p>Click this <a href='http://localhost:3000/reset/${token}'>link<a/>  to set a new password.</p>
@@ -245,7 +244,7 @@ exports.postNewPassword = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const user = await UserModel.findOne({
+    const user = await User.findOne({
       resetToken: passwordToken,
       resetTokenExpiration: { $gt: Date.now() },
     });
@@ -254,7 +253,7 @@ exports.postNewPassword = async (req, res, next) => {
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
-    res.status(200).json(callbackSuccessJson({ user }, "reset"));
+    res.status(200).json(callbackSuccessJson({ user }, 'reset'));
   } catch (err) {
     const error = new Error(err);
     error.httpStatusCode = 500;
@@ -264,7 +263,7 @@ exports.postNewPassword = async (req, res, next) => {
 
 exports.deleteUserItself = async (req, res, next) => {
   try {
-    const { files } = await UserModel.findById(req.userId).select({
+    const { files } = await User.findById(req.userId).select({
       files: 1,
     });
 
@@ -279,14 +278,14 @@ exports.deleteUserItself = async (req, res, next) => {
     });
 
     const result = await Model.findByIdAndDelete(req.userId);
-    res.json(callback.callbackSuccessJson(result, "deleted"));
+    res.json(callback.callbackSuccessJson(result, 'deleted'));
   } catch (err) {
-    res.json(callback.callbackErrorJson(err, "error"));
+    res.json(callback.callbackErrorJson(err, 'error'));
   }
 };
 exports.deleteUserByAdmin = async (req, res, next) => {
   try {
-    const { files } = await UserModel.findById(req.params.id).select({
+    const { files } = await User.findById(req.params.id).select({
       files: 1,
     });
 
@@ -300,8 +299,8 @@ exports.deleteUserByAdmin = async (req, res, next) => {
       });
     });
     const result = await Model.findByIdAndDelete(req.params.id);
-    res.json(callback.callbackSuccessJson(result, "deleted"));
+    res.json(callback.callbackSuccessJson(result, 'deleted'));
   } catch (err) {
-    res.json(callback.callbackErrorJson(err, "error"));
+    res.json(callback.callbackErrorJson(err, 'error'));
   }
 };

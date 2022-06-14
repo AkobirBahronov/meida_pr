@@ -1,6 +1,13 @@
+const payment = require('./payment.config');
+
+require('dotenv').config();
+
 module.exports = {
-  port: 3000,
-  database_url: "mongodb://localhost:27017/media-project",
+  ...payment,
+  jwt_key: process.env.JWT_KEY,
+  jwt_time: '2h',
+  port: process.env.DEV_PORT,
+  database_url: process.env.DATABASE_URL,
   database_option: {
     useNewUrlParser: true,
     useCreateIndex: true,

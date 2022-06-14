@@ -1,19 +1,18 @@
-const VideoModel = require('../model/videoModel');
-const ViewsModel = require('../model/viewsModel');
 const callback = require('../config/callback');
+const { Video, Views } = require('../models');
 const ObjectId = require('mongodb').ObjectId;
 
 exports.toggleWatchLaterVideo = async (req, res, next) => {
   try {
-    const views = await ViewsModel.findOneAndUpdate({
+    const views = await Views.findOneAndUpdate({
       user_ID: ObjectId(req.userId),
       video_ID: ObjectId(req.params.id),
     });
-    const video = await VideoModel.findByIdAndUpdate(req.params.id);
+    const video = await Video.findByIdAndUpdate(req.params.id);
     if (!views) {
       video.views++;
       const result = await video.save();
-      await ViewsModel.create({
+      await Views.create({
         user_ID: req.userId,
         status: ['views', 'history', 'watch-later'],
         video_ID: req.params.id,
@@ -35,7 +34,7 @@ exports.toggleWatchLaterVideo = async (req, res, next) => {
 
 exports.deleteViewsHistory = async (req, res, next) => {
   try {
-    const views = await ViewsModel.findOneAndUpdate({
+    const views = await Views.findOneAndUpdate({
       user_ID: ObjectId(req.userId),
       video_ID: ObjectId(req.params.id),
     });
@@ -50,5 +49,5 @@ exports.deleteViewsHistory = async (req, res, next) => {
       const result = await views.save();
       res.json(callback.callbackSuccessJson(result, 'received'));
     }
-  } catch (err) {}
+  } catch (err) { }
 };

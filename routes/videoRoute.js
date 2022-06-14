@@ -3,9 +3,9 @@ const multer = require("multer");
 const md5 = require("md5");
 const path = require("path");
 const { body } = require("express-validator");
-const isAuth = require("../middleware/is-auth");
-const isAdmin = require("../middleware/is-admin");
-const videoController = require("../controller/videoController");
+const isAuth = require("../controllers/middleware/is-auth");
+const isAdmin = require("../controllers/middleware/is-admin");
+const videoController = require("../controllers/video.controller");
 
 const router = express.Router();
 

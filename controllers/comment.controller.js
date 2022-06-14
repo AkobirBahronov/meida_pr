@@ -1,9 +1,8 @@
 const DemoClass = require('../class/class');
-const CommentModel = require('../model/commentModel');
-const LikeModel = require('../model/likeModel');
 const ObjectId = require('mongodb').ObjectId;
 
 const { callbackSuccessJson } = require('../config/callback');
+const { Comment, Like } = require('../models');
 
 exports.getVideoComments = async (req, res, next) => {
   try {
@@ -11,12 +10,12 @@ exports.getVideoComments = async (req, res, next) => {
     const topComments = req.query.top_comments;
     let comments;
     if (topComments) {
-      comments = await CommentModel.find({ video_ID: videoId }).sort({
+      comments = await Comment.find({ video_ID: videoId }).sort({
         like: -1,
         _id: -1,
       });
     } else {
-      comments = await CommentModel.find({ video_ID: videoId });
+      comments = await Comment.find({ video_ID: videoId });
     }
     res.status(200).json(callbackSuccessJson(comments, 'received'));
   } catch (err) {
@@ -29,12 +28,12 @@ exports.getUserComments = async (req, res, next) => {
     const topComments = req.query.top_comments;
     let comments;
     if (topComments) {
-      comments = await CommentModel.find({ user_ID: req.userId }).sort({
+      comments = await Comment.find({ user_ID: req.userId }).sort({
         like: -1,
         _id: -1,
       });
     } else {
-      comments = await CommentModel.find({ user_ID: req.userId });
+      comments = await Comment.find({ user_ID: req.userId });
     }
     res.status(200).json(callbackSuccessJson(comments, 'received'));
   } catch (err) {
@@ -49,27 +48,27 @@ exports.createComment = async (req, res, next) => {
     video_ID: req.params.videoId,
     user_ID: req.userId,
   };
-  const result = new DemoClass(CommentModel, newReq, res, next);
+  const result = new DemoClass(Comment, newReq, res, next);
   result.createData();
 };
 
 exports.editComment = async (req, res, next) => {
-  const result = new DemoClass(CommentModel, req, res, next);
+  const result = new DemoClass(Comment, req, res, next);
   result.updateDataDetails(req.userId);
 };
 
 exports.toggleTheLike = async (req, res, next) => {
   try {
     const commentId = req.params.id;
-    const comment = await CommentModel.findByIdAndUpdate(commentId);
-    const likes = await LikeModel.findOne({
+    const comment = await Comment.findByIdAndUpdate(commentId);
+    const likes = await Like.findOne({
       user_ID: req.userId,
       comment_ID: commentId,
     });
 
     if (!likes) {
       comment.like++;
-      await LikeModel.create({
+      await Like.create({
         user_ID: req.userId,
         comment_ID: commentId,
       });
@@ -80,7 +79,7 @@ exports.toggleTheLike = async (req, res, next) => {
       await likes.save();
     } else if (likes.status == 'like') {
       comment.like--;
-      await LikeModel.deleteOne({
+      await Like.deleteOne({
         user_ID: ObjectId(req.userId),
         comment_ID: ObjectId(commentId),
       });
@@ -97,15 +96,15 @@ exports.toggleTheLike = async (req, res, next) => {
 exports.toggleTheDislike = async (req, res, next) => {
   try {
     const commentId = req.params.id;
-    const comment = await CommentModel.findByIdAndUpdate(commentId);
-    const dislikes = await LikeModel.findOne({
+    const comment = await Comment.findByIdAndUpdate(commentId);
+    const dislikes = await Like.findOne({
       user_ID: req.userId,
       comment_ID: commentId,
     });
 
     if (!dislikes) {
       comment.dislike++;
-      await LikeModel.create({
+      await Like.create({
         user_ID: req.userId,
         comment_ID: commentId,
         status: 'dislike',
@@ -117,7 +116,7 @@ exports.toggleTheDislike = async (req, res, next) => {
       await dislikes.save();
     } else if (dislikes.status == 'dislike') {
       comment.dislike--;
-      await LikeModel.deleteOne({
+      await Like.deleteOne({
         user_ID: ObjectId(req.userId),
         comment_ID: ObjectId(commentId),
       });

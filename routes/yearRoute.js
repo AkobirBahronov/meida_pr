@@ -1,8 +1,8 @@
 const express = require("express");
 const { body } = require("express-validator");
-const isAuth = require("../middleware/is-auth");
-const isAdmin = require("../middleware/is-admin");
-const yearController = require("../controller/yearController");
+const isAuth = require("../controllers/middleware/is-auth");
+const isAdmin = require("../controllers/middleware/is-admin");
+const yearController = require("../controllers/year.controller");
 
 const router = express.Router();
 
