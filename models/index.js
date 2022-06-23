@@ -12,6 +12,7 @@ const Movies = require('./movies.model')
 const Oson = require('./oson.model')
 const Payment = require('./payment.model')
 const Rating = require('./rating.model')
+const Review = require('./review.model')
 const Speciality = require('./speciality.model')
 const Subscription = require('./subscription.model')
 const Subtitle = require('./subtitle.model')
@@ -38,6 +39,7 @@ module.exports = {
     Oson,
     Payment,
     Rating,
+    Review,
     Speciality,
     Subscription,
     Subtitle,

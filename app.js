@@ -20,6 +20,7 @@ const videoRouter = require('./routes/videoRoute');
 const ratingRouter = require('./routes/ratingRoute');
 const subscriptionRouter = require('./routes/subscriptionRoute');
 const osonRouter = require('./routes/osonRoute');
+const trailerRouter = require('./routes/trailerRoute');
 const { errorHandler } = require('./controllers/middleware/ErroHandler');
 
 // Middleware
@@ -52,6 +53,7 @@ app.use('/videos', videoRouter);
 app.use('/ratings', ratingRouter);
 app.use('/subscriptions', subscriptionRouter);
 app.use('/payment', osonRouter);
+app.use('/trailers', trailerRouter);
 
 app.use(errorHandler);
 

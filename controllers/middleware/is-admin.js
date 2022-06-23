@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
     decodedToken = jwt.verify(token, jwt_key);
   } catch (err) {
     err.status = 500;
-    throw err;
+    return next(err);
   }
   if (!decodedToken) {
     const error = new Error('Not authenticated.');

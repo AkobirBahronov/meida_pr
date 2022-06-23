@@ -53,6 +53,7 @@ exports.createPayment = async (req, res, next) => {
                   currency: 'UZS',
                   comment: `Оплата заказа N-${data.uuid}`,
                   return_url: 'http://localhost:3000/payment/check',
+                  notify_url: "http://localhost:3000/payment/check",
                   lifetime: 30,
                   lang: 'ru',
                 },

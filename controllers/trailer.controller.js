@@ -18,10 +18,10 @@ exports.createTrailer = async (req, res, next) => {
 
 exports.updateTrailer = async (req, res, next) => {
     const result = new DemoClass(Trailer, req, res, next);
-    result.updateDataFiles();
+    result.updateDataFiles('trailers');
 };
 
 exports.deleteTrailer = async (req, res, next) => {
     const result = new DemoClass(Trailer, req, res, next);
-    result.deleteDataWithFiles();
+    result.deleteDataWithFiles('trailers');
 };
