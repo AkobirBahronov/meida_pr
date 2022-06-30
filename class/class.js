@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
 const ObjectId = require('mongodb').ObjectId;
+const client = require("../config/redis")
 
 module.exports = class DemoClass {
   constructor(Model, Request, Response, Next) {
@@ -41,6 +42,34 @@ module.exports = class DemoClass {
           res.json(callback.callbackSuccessJson(data, 'received'));
         }
       });
+  }
+
+  async fetchAndCache(cacheName) {
+    const { Model, req, res, next } = this;
+
+    const data = await (await client).SMEMBERS(cacheName)
+    if (data.length < 1) {
+      await Model.find()
+        .sort({ createdAt: -1 })
+        .exec((error, data) => {
+          if (error) {
+            res.json(callback.callbackErrorJson(error, error.message));
+          } else {
+            data.forEach(async (value) => {
+              (await client).SADD(cacheName, JSON.stringify(value), function (err, reply) {
+                if (err) {
+                  console.log(err)
+                }
+                console.log(reply)
+              });
+            })
+            res.json(callback.callbackSuccessJson(data, 'received'));
+          }
+        });
+    } else {
+      const result = data.map(tag => JSON.parse(tag));
+      res.json(callback.callbackSuccessJson(result, 'received'));
+    }
   }
 
   async getAllByMovies(movies_ID) {

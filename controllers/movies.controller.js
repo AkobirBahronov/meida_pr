@@ -3,7 +3,7 @@ const { Movies } = require("../models");
 
 exports.getAllMovies = async (req, res, next) => {
   const result = new DemoClass(Movies, req, res, next);
-  result.getAll();
+  result.fetchAndCache("movies");
 };
 
 exports.getMovie = async (req, res, next) => {

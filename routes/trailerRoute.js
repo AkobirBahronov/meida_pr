@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const fileUpload = multer({ storage: storage });
 
-router.get("/", isAuth, trailerController.getTrailers);
+router.get("/movies/:movies_ID/trailers", isAuth, trailerController.getTrailers);
 
 router.get("/:id", isAuth, trailerController.getTrailer);
 

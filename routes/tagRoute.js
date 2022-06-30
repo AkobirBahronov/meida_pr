@@ -8,6 +8,10 @@ const router = express.Router();
 
 router.get("/", isAuth, tagController.getTags);
 
+router.get("/create", isAuth, tagController.createData_1);
+
+router.get("/cache", isAuth, tagController.getTagsWithCache);
+
 router.get("/:id", isAuth, tagController.getTag);
 
 router.put(

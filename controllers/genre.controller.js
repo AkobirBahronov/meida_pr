@@ -3,7 +3,7 @@ const { Genre } = require("../models");
 
 exports.getGenres = async (req, res, next) => {
   const result = new DemoClass(Genre, req, res, next);
-  result.getAll();
+  result.fetchAndCache("genre");
 };
 
 exports.getGenre = async (req, res, next) => {

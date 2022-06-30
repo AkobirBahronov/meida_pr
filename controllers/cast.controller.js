@@ -3,7 +3,7 @@ const { Cast } = require("../models");
 
 exports.getCasts = async (req, res, next) => {
   const result = new DemoClass(Cast, req, res, next);
-  result.getAll();
+  result.fetchAndCache("casts");
 };
 
 exports.getCast = async (req, res, next) => {

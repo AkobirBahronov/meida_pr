@@ -8,7 +8,7 @@ const ObjectId = require('mongodb').ObjectId;
 
 exports.getRatings = async (req, res, next) => {
   const result = new DemoClass(Rating, req, res, next);
-  result.getAll();
+  result.fetchAndCache("rating")
 };
 
 exports.getRating = async (req, res, next) => {

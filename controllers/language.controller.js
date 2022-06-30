@@ -3,7 +3,7 @@ const { Language } = require("../models");
 
 exports.getLanguages = async (req, res, next) => {
   const result = new DemoClass(Language, req, res, next);
-  result.getAll();
+  result.fetchAndCache("language");
 };
 
 exports.getLanguage = async (req, res, next) => {

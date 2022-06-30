@@ -3,7 +3,7 @@ const { Review } = require("../models");
 
 exports.getReviews = async (req, res, next) => {
     const result = new DemoClass(Review, req, res, next);
-    result.getAll();
+    result.fetchAndCache("review");
 };
 
 exports.getReview = async (req, res, next) => {

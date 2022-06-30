@@ -3,7 +3,7 @@ const { Country } = require("../models");
 
 exports.getCountries = async (req, res, next) => {
   const result = new DemoClass(Country, req, res, next);
-  result.getAll();
+  result.fetchAndCache("countries");
 };
 
 exports.getCountry = async (req, res, next) => {

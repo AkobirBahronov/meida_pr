@@ -6,36 +6,44 @@ const MySchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "category",
       required: true,
+      index: true
     },
     year_ID: {
       type: Schema.Types.ObjectId,
       ref: "year",
       required: true,
+      index: true
     },
     language_ID: {
       type: Schema.Types.ObjectId,
       ref: "language",
       required: true,
+      index: true
+
     },
     cast_ID: {
       type: Schema.Types.ObjectId,
       ref: "cast",
       required: true,
+      index: true
     },
     director_ID: {
       type: Schema.Types.ObjectId,
       ref: "cast",
       required: true,
+      index: true
     },
     country_ID: {
       type: Schema.Types.ObjectId,
       ref: "country",
       required: true,
+      index: true
     },
     genre_ID: {
       type: Schema.Types.ObjectId,
       ref: "genre",
       required: true,
+      index: true
     },
     name: {
       uz: { type: String, required: [true, "Please fill up"] },

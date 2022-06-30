@@ -3,7 +3,7 @@ const { Year } = require("../models");
 
 exports.getYears = async (req, res, next) => {
   const result = new DemoClass(Year, req, res, next);
-  result.getAll();
+  result.fetchAndCache("years")
 };
 
 exports.getYear = async (req, res, next) => {

@@ -3,7 +3,7 @@ const { Speciality } = require("../models");
 
 exports.getSpecialities = async (req, res, next) => {
   const result = new DemoClass(Speciality, req, res, next);
-  result.getAll();
+  result.fetchAndCache("speciality")
 };
 
 exports.getSpeciality = async (req, res, next) => {

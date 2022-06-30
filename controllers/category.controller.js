@@ -3,7 +3,7 @@ const { Category } = require("../models");
 
 exports.getCategories = async (req, res, next) => {
   const result = new DemoClass(Category, req, res, next);
-  result.getAll();
+  result.fetchAndCache("categories");
 };
 
 exports.getCategory = async (req, res, next) => {

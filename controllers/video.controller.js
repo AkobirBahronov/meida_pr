@@ -4,7 +4,7 @@ const { Video, Views } = require('../models');
 
 exports.getAllVideos = async (req, res, next) => {
   const result = new DemoClass(Video, req, res, next);
-  result.getAll();
+  result.fetchAndCache("video");
 };
 
 exports.watchVideo = async (req, res, next) => {

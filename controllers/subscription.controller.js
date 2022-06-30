@@ -4,7 +4,7 @@ const { Subscription, Deadline, User } = require("../models");
 
 exports.getAllSubscriptions = async (req, res, next) => {
   const result = new DemoClass(Subscription, req, res, next);
-  result.getAll();
+  result.fetchAndCache("subscription");
 };
 
 exports.getSubscription = async (req, res, next) => {

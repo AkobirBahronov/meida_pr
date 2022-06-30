@@ -12,6 +12,7 @@ const MySchema = Schema(
             type: Schema.Types.ObjectId,
             ref: "movies",
             required: true,
+            index: true
         },
     },
     {

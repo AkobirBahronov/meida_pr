@@ -3,6 +3,7 @@ const app = express();
 const { port } = require('./config/index');
 const connection = require('./database/index');
 const bodyParser = require('body-parser');
+const responseTime = require('response-time')
 
 const cors = require('cors');
 
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(responseTime())
 connection();
 
 app.use('/auth', userRouter);
@@ -53,7 +55,7 @@ app.use('/videos', videoRouter);
 app.use('/ratings', ratingRouter);
 app.use('/subscriptions', subscriptionRouter);
 app.use('/payment', osonRouter);
-app.use('/trailers', trailerRouter);
+app.use(trailerRouter);
 
 app.use(errorHandler);
 
